@@ -3,7 +3,7 @@ import React from 'react'
 
 import { Input } from '../components/Form/input'
 
-export default function Home() {
+export default function SignIn() {
   return (
     <Flex w='100vw' h='100vh' align='center' justify='center'>
       <Flex
