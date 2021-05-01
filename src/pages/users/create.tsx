@@ -17,6 +17,7 @@ import {
   Tr,
   VStack,
 } from '@chakra-ui/react'
+import Link from 'next/link'
 import { RiAddLine, RiPencilLine } from 'react-icons/ri'
 
 import { Input } from '../../components/Form/input'
@@ -54,7 +55,12 @@ export default function CreateUser() {
 
           <Flex mt='8' justify='flex-end'>
             <HStack spacing='4'>
-              <Button colorScheme='whiteAlpha'>Cancelar</Button>
+              <Link href='/users' passHref>
+                <Button as='a' colorScheme='whiteAlpha'>
+                  Cancelar
+                </Button>
+              </Link>
+
               <Button colorScheme='pink'>Salvar</Button>
             </HStack>
           </Flex>
