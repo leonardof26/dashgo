@@ -1,5 +1,9 @@
-import { Button, Stack, Box } from '@chakra-ui/react'
+import { Stack, Box } from '@chakra-ui/react'
 import { PaginationItem } from './PaginationItem'
+
+interface PaginationProps {
+  totalCountOfRegisters: number
+}
 
 export function Pagination() {
   return (

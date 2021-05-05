@@ -110,7 +110,11 @@ export default function CreateUser() {
                 </Button>
               </Link>
 
-              <Button colorScheme='pink' type='submit'>
+              <Button
+                colorScheme='pink'
+                type='submit'
+                isLoading={formState.isSubmitting}
+              >
                 Salvar
               </Button>
             </HStack>
