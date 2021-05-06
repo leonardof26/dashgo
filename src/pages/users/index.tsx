@@ -7,6 +7,7 @@ import {
   Flex,
   Heading,
   Icon,
+  Spinner,
   Table,
   Tbody,
   Td,
@@ -17,6 +18,7 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 import Link from 'next/link'
+import { useQuery } from 'react-query'
 
 import { RiAddLine, RiPencilLine } from 'react-icons/ri'
 
@@ -25,16 +27,17 @@ import { Pagination } from '../../components/Pagination'
 import { Sidebar } from '../../components/Sidebar'
 
 export default function UserList() {
+  const { data, isLoading, error } = useQuery('users', async () => {
+    const response = await fetch('http://localhost:3000/api/users')
+    const data = await response.json()
+
+    return data
+  })
+
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true,
   })
-
-  useEffect(() => {
-    fetch('http://localhost:3000/api/users')
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-  }, [])
 
   return (
     <Box>
@@ -61,48 +64,58 @@ export default function UserList() {
             </Link>
           </Flex>
 
-          <Table colorScheme='whiteAlpha'>
-            <Thead>
-              <Tr>
-                <Th px={['4', '4', '6']} color='gray.300' width='8'>
-                  <Checkbox colorScheme='pink' />
-                </Th>
-                <Th>Usuário</Th>
-                {!!isWideVersion && <Th>Data de Cadastro</Th>}
-                {!!isWideVersion && <Th width='8' />}
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Tr>
-                <Td px={['4', '4', '6']}>
-                  <Checkbox colorScheme='pink' />
-                </Td>
-                <Td>
-                  <Box>
-                    <Text fontWeight='bold'>Leonardo Fontes</Text>
-                    <Text fontSize='small' color='gray.300'>
-                      leonardopf26@gmail.com
-                    </Text>
-                  </Box>
-                </Td>
-                {!!isWideVersion && <Td>19 maio 2021</Td>}
-                {!!isWideVersion && (
-                  <Td>
-                    <Button
-                      as='a'
-                      size='sm'
-                      fontSize='sm'
-                      colorScheme='purple'
-                      leftIcon={<Icon as={RiPencilLine} fontSize='16' />}
-                    >
-                      Editar
-                    </Button>
-                  </Td>
-                )}
-              </Tr>
-            </Tbody>
-          </Table>
-          <Pagination />
+          {isLoading ? (
+            <Flex justify='center'>
+              <Spinner />
+            </Flex>
+          ) : error ? (
+            <Flex justify='center'>Falha ao obter dados do Usuário</Flex>
+          ) : (
+            <>
+              <Table colorScheme='whiteAlpha'>
+                <Thead>
+                  <Tr>
+                    <Th px={['4', '4', '6']} color='gray.300' width='8'>
+                      <Checkbox colorScheme='pink' />
+                    </Th>
+                    <Th>Usuário</Th>
+                    {!!isWideVersion && <Th>Data de Cadastro</Th>}
+                    {!!isWideVersion && <Th width='8' />}
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  <Tr>
+                    <Td px={['4', '4', '6']}>
+                      <Checkbox colorScheme='pink' />
+                    </Td>
+                    <Td>
+                      <Box>
+                        <Text fontWeight='bold'>Leonardo Fontes</Text>
+                        <Text fontSize='small' color='gray.300'>
+                          leonardopf26@gmail.com
+                        </Text>
+                      </Box>
+                    </Td>
+                    {!!isWideVersion && <Td>19 maio 2021</Td>}
+                    {!!isWideVersion && (
+                      <Td>
+                        <Button
+                          as='a'
+                          size='sm'
+                          fontSize='sm'
+                          colorScheme='purple'
+                          leftIcon={<Icon as={RiPencilLine} fontSize='16' />}
+                        >
+                          Editar
+                        </Button>
+                      </Td>
+                    )}
+                  </Tr>
+                </Tbody>
+              </Table>
+              <Pagination />
+            </>
+          )}
         </Box>
       </Flex>
     </Box>
