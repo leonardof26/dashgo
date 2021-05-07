@@ -22,6 +22,8 @@ import { useQuery } from 'react-query'
 
 import { RiAddLine, RiPencilLine } from 'react-icons/ri'
 
+import { api } from '../../services/api'
+
 import { Header } from '../../components/Header'
 import { Pagination } from '../../components/Pagination'
 import { Sidebar } from '../../components/Sidebar'
@@ -37,10 +39,9 @@ export default function UserList() {
   const { data, isLoading, isFetching, error } = useQuery(
     'users',
     async () => {
-      const response = await fetch('http://localhost:3000/api/users')
-      const data = await response.json()
+      const response = await api.get('users')
 
-      const users = data.users.map((user: User) => {
+      const users = response.data.users.map((user: User) => {
         return {
           id: user.id,
           name: user.name,
