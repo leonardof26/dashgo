@@ -13,10 +13,15 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import Link from 'next/link'
+import { useMutation } from 'react-query'
+import { useRouter } from 'next/router'
+
+import { api } from '../../services/api'
 
 import { Input } from '../../components/Form/input'
 import { Header } from '../../components/Header'
 import { Sidebar } from '../../components/Sidebar'
+import { queryClient } from '../../services/queryClient'
 
 type CreateUserFormData = {
   name: string
@@ -38,6 +43,23 @@ const createUserSchema = yup.object().shape({
 })
 
 export default function CreateUser() {
+  const router = useRouter()
+
+  const createUser = useMutation(
+    async (user: CreateUserFormData) => {
+      const response = await api.post('users', {
+        user: { ...user, created_at: new Date() },
+      })
+
+      return response.data.user
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('users')
+      },
+    }
+  )
+
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(createUserSchema),
   })
@@ -45,8 +67,9 @@ export default function CreateUser() {
   const handleCreateUser: SubmitHandler<CreateUserFormData> = async (
     values
   ) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    console.log(values)
+    await createUser.mutateAsync(values)
+
+    router.push('/users')
   }
 
   return (
@@ -63,7 +86,7 @@ export default function CreateUser() {
           p={['6', '8']}
           onSubmit={handleSubmit(handleCreateUser)}
         >
-          <Heading size='lg' fontWeigth='normal'>
+          <Heading size='lg' fontWeight='normal'>
             Criar Usuário
           </Heading>
 
