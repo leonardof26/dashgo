@@ -23,13 +23,14 @@ import NextLink from 'next/link'
 
 import { RiAddLine } from 'react-icons/ri'
 
-import { useUsers } from '../../services/hooks/useUsers'
+import { getUsers, useUsers } from '../../services/hooks/useUsers'
 
 import { Header } from '../../components/Header'
 import { Pagination } from '../../components/Pagination'
 import { Sidebar } from '../../components/Sidebar'
 import { queryClient } from '../../services/queryClient'
 import { api } from '../../services/api'
+import { GetServerSideProps } from 'next'
 
 type User = {
   id: string
@@ -38,9 +39,15 @@ type User = {
   createdAt: string
 }
 
-export default function UserList() {
+interface UserListProps {
+  users: User[]
+}
+
+export default function UserList({ users }: UserListProps) {
   const [currentPage, setCurrentPage] = useState(1)
-  const { data, isLoading, isFetching, error } = useUsers(currentPage)
+  const { data, isLoading, isFetching, error } = useUsers(currentPage, {
+    // initialData: users,
+  })
 
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -143,3 +150,13 @@ export default function UserList() {
     </Box>
   )
 }
+
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const { users, totalCount } = await getUsers(1)
+
+//   return {
+//     props: {
+//       users,
+//     },
+//   }
+// }
